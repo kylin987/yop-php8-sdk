@@ -1,0 +1,36 @@
+{
+  "name": "kylin987/yop-php8-sdk",
+  "type": "library",
+  "description": "本项目用于对接 YOP 上面的 API,php8及以上支持",
+  "homepage": "https://open.yeepay.com",
+  "license": "Apache-2.0",
+  "keywords": [
+    "yop",
+    "openapi"
+  ],
+  "authors": [
+    {
+      "name": "kylin87",
+      "email": "kylin87@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.0",
+    "ext-openssl": "*",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "Yeepay\\Yop\\Sdk\\V1\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Yeepay\\Yop\\Sdk\\V1\\Test\\": "test/"
+    }
+  }
+}
