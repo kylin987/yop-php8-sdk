@@ -319,8 +319,9 @@ class YopRsaClient
             $response->error->subCode = $jsoncontent->subCode;
             $response->error->subMessage = $jsoncontent->subMessage;
         }
-
-        print_r($response);
+        if (YopConfig::$debug) {
+            print_r($response);
+        }
 
 //        if (!empty($response->sign)) {
 //            $response->validSign = YopRsaClient::isValidRsaResult($jsoncontent->result, $jsoncontent->sign, $YopRequest->yopPublicKey);
