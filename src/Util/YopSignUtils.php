@@ -87,10 +87,10 @@ abstract class YopSignUtils
 
     /**
      * 解密数字信封
-     * @param $source 待解密内容
-     * @param $private_Key 商户私钥（用于解密）
-     * @param $public_Key 易宝公钥(用于签名)
-     * @return string 已解密内容
+     * @param $source //待解密内容
+     * @param $private_Key //商户私钥（用于解密）
+     * @param $public_Key //易宝公钥(用于签名)
+     * @return array 已解密内容
      */
     public static function decrypt($source, $private_Key, $public_Key)
     {
@@ -98,18 +98,20 @@ abstract class YopSignUtils
             wordwrap($private_Key, 64, "\n", true) .
             "\n-----END RSA PRIVATE KEY-----";
 
-        extension_loaded('openssl') or die('php需要openssl扩展支持');
+        if (!extension_loaded('openssl')) {
+            return ['status' => 'fail', 'msg' => 'php需要openssl扩展支持'];
+        }
 
         /* 提取私钥 */
-        $privateKey = openssl_get_privatekey($private_key);
-
-        ($privateKey) or die('密钥不可用');
+        if (!$privateKey = openssl_get_privatekey($private_key)) {
+            return ['status' => 'fail', 'msg' => '密钥不可用'];
+        }
 
         //分解参数
         $args = explode('$', $source);
 
         if (count($args) != 4) {
-            die('source invalid : ');
+            return ['status' => 'fail', 'msg' => 'source invalid : '];
         }
 
         $encryptedRandomKeyToBase64 = $args[0];
@@ -120,7 +122,7 @@ abstract class YopSignUtils
         //用私钥对随机密钥进行解密
         openssl_private_decrypt(Base64Url::decode($encryptedRandomKeyToBase64), $randomKey, $privateKey);
 
-        openssl_free_key($privateKey);
+//        openssl_free_key($privateKey);
 
         $encryptedData = openssl_decrypt(Base64Url::decode($encryptedDataToBase64), "AES-128-ECB", $randomKey, OPENSSL_RAW_DATA);
 
@@ -136,13 +138,13 @@ abstract class YopSignUtils
 
         $res = openssl_verify($sourceData, Base64Url::decode($signToBase64), $publicKey, $digestAlg); //验证
 
-        openssl_free_key($publicKey);
+//        openssl_free_key($publicKey);
 
         //输出验证结果，1：验证成功，0：验证失败
         if ($res == 1) {
-            return $sourceData;
+            return ['status' => 'success', 'data' => $sourceData];
         } else {
-            die("verifySign fail!");
+            return ['status' => 'fail', 'msg' => 'verifySign fail!'];
         }
     }
 
