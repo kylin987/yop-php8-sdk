@@ -6,7 +6,9 @@
   "license": "Apache-2.0",
   "keywords": [
     "yop",
-    "openapi"
+    "openapi",
+    "yop-php-sdk",
+    "yeepay"
   ],
   "authors": [
     {
